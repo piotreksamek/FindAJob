@@ -27,8 +27,8 @@
                 <div>
                     <h3 class="float-md-start mb-0">FindAJob</h3>
                     <nav class="nav nav-masthead float-md-end">
-                        <a class="nav-link fw-bold py-1 px-0" href="#">Home</a>
-                        <a class="nav-link fw-bold py-1 px-0" href="#">Offers</a>
+                        <a class="nav-link fw-bold py-1 px-0" href="{{ path('app_index') }}">Home</a>
+                        <a class="nav-link fw-bold py-1 px-0" href="{{ path('app_offers') }}">Offers</a>
                         <button
                                 class="dropdown-toggle btn nav-link fw-bold py-1 px-0"
                                 type="button"
@@ -39,10 +39,10 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-dropdown">
                                 <li>
-                                    <a class="dropdown-item" href="#">Exit</a>
+                                    <a class="dropdown-item" href="#">Log In</a>
                                 </li>
                             <li>
-                                <a class="dropdown-item" href="#">Log Out</a>
+                                <a class="dropdown-item" href="#">Register</a>
                             </li>
                         </ul>
                     </nav>
@@ -50,7 +50,7 @@
             </header>
             {% block content %}{% endblock %}
             <footer class="mt-auto text-white-50 px-5">
-                <h8>Find your dream job with <h7 class="text-white">FindAJob</h7></h8>
+                <h6>Find your dream job with FindAJob</h6>
             </footer>
         </div>
         {% endblock %}
