@@ -29,6 +29,7 @@
                     <nav class="nav nav-masthead float-md-end">
                         <a class="nav-link fw-bold py-1 px-0" href="{{ path('app_index') }}">Home</a>
                         <a class="nav-link fw-bold py-1 px-0" href="{{ path('app_offers') }}">Offers</a>
+                        {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <button
                                 class="dropdown-toggle btn nav-link fw-bold py-1 px-0"
                                 type="button"
@@ -39,12 +40,30 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-dropdown">
                                 <li>
-                                    <a class="dropdown-item" href="#">Log In</a>
+                                    <a class="dropdown-item" href="{{ path('app_login') }}">Log In</a>
                                 </li>
                             <li>
-                                <a class="dropdown-item" href="#">Register</a>
+                                <a class="dropdown-item" href="{{ path('app_register') }}">Register</a>
                             </li>
                         </ul>
+                        {% else %}
+                            <button
+                                    class="dropdown-toggle btn nav-link fw-bold py-1 px-0"
+                                    type="button"
+                                    id="user-dropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                            >Tools
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-dropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">Log Out</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_profile') }}">My profile</a>
+                                </li>
+                            </ul>
+                        {% endif %}
                     </nav>
                 </div>
             </header>
