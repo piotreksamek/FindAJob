@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -27,7 +28,10 @@ class RegisterFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'required' => true
             ])
+            ->add('employer', CheckboxType::class, [
+                'label' => 'Zaznacz jeśli jesteś pracodawcą',
+                'required' => false,
+            ])
             ->add('save', SubmitType::class);
     }
-
 }

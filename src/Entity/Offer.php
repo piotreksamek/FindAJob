@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\OfferRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
@@ -35,6 +36,9 @@ class Offer
 
     #[ORM\Column(length: 255)]
     private string $city;
+
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Submission::class)]
+    private ?Collection $submission;
 
     public function getId(): int
     {
@@ -109,5 +113,15 @@ class Offer
     public function setCompany(string $company): void
     {
         $this->company = $company;
+    }
+
+    public function getSubmission(): ?Collection
+    {
+        return $this->submission;
+    }
+
+    public function setSubmission(?Collection $submission): void
+    {
+        $this->submission = $submission;
     }
 }

@@ -36,5 +36,4 @@ class OfferFactory extends ModelFactory
     {
         return Offer::class;
     }
-
 }

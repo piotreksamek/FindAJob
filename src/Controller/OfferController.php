@@ -24,7 +24,7 @@ class OfferController extends AbstractController
     #[Route('/offers/{slug}', name: 'app_offer_show')]
     public function offer(Offer $offer): Response
     {
-        return $this->render('offer.html.twig',[
+        return $this->render('offer.html.twig', [
             'offer' => $offer
         ]);
     }
