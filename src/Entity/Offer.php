@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\OfferRepository;
-use Doctrine\Common\Collections\Collection;
+use Cassandra\Date;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
@@ -18,9 +18,6 @@ class Offer
 
     #[ORM\Column(length: 255)]
     private string $name;
-
-    #[ORM\Column(length: 255)]
-    private string $company;
 
     #[ORM\Column(length: 255, type: 'text')]
     private string $description;
@@ -37,8 +34,19 @@ class Offer
     #[ORM\Column(length: 255)]
     private string $city;
 
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Submission::class)]
-    private ?Collection $submission;
+//    public function __construct(string $name, string $description, string $price, string $city, Company $company)
+//    {
+//        $this->name = $name;
+//        $this->description = $description;
+//        $this->price = $price;
+//        $this->city = $city;
+//        $this->owner = $company;
+//        $this->setSlug($name);
+//        $this->dateTime = new \DateTime();
+//    }
+
+    #[ORM\ManyToOne(inversedBy: 'offers')]
+    private ?Company $owner = null;
 
     public function getId(): int
     {
@@ -50,19 +58,9 @@ class Offer
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getDescription(): string
     {
         return $this->description;
-    }
-
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
     }
 
     public function getPrice(): string
@@ -70,19 +68,9 @@ class Offer
         return $this->price;
     }
 
-    public function setPrice(string $price): void
-    {
-        $this->price = $price;
-    }
-
     public function getDateTime(): \DateTime
     {
         return $this->dateTime;
-    }
-
-    public function setDateTime(\DateTime $dateTime): void
-    {
-        $this->dateTime = $dateTime;
     }
 
     public function getSlug(): string
@@ -92,6 +80,8 @@ class Offer
 
     public function setSlug(string $slug): void
     {
+        $slug = strtr($this->name, ' ', '-');
+
         $this->slug = $slug;
     }
 
@@ -100,28 +90,15 @@ class Offer
         return $this->city;
     }
 
-    public function setCity(string $city): void
+    public function getOwner(): ?Company
     {
-        $this->city = $city;
+        return $this->owner;
     }
 
-    public function getCompany(): string
+    public function setOwner(?Company $owner): self
     {
-        return $this->company;
-    }
+        $this->owner = $owner;
 
-    public function setCompany(string $company): void
-    {
-        $this->company = $company;
-    }
-
-    public function getSubmission(): ?Collection
-    {
-        return $this->submission;
-    }
-
-    public function setSubmission(?Collection $submission): void
-    {
-        $this->submission = $submission;
+        return $this;
     }
 }

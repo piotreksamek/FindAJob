@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Factory;
+namespace App\DataFixtures\Factory;
 
 use App\Entity\Company;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;

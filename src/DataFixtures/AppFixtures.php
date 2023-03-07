@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\CompanyFactory;
-use App\Factory\OfferFactory;
-use App\Factory\UserFactory;
+use App\DataFixtures\Factory\CompanyFactory;
+use App\DataFixtures\Factory\OfferFactory;
+use App\DataFixtures\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -22,8 +22,6 @@ class AppFixtures extends Fixture
         OfferFactory::createMany(10);
 
         CompanyFactory::createMany(10);
-
-//        SubmissionFactory::createMany(10);
 
         $manager->flush();
     }

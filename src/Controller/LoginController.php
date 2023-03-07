@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +13,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class LoginController extends AbstractController
 {
+    #[IsGranted('IS_ANONYMOUS')]
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -24,11 +26,5 @@ class LoginController extends AbstractController
     #[Route('/logout', name: 'app_logout')]
     public function logout(Request $request): void
     {
-    }
-
-    #[Route('/admin', name: 'app_admin')]
-    public function admin(): Response
-    {
-        return $this->json('asd');
     }
 }

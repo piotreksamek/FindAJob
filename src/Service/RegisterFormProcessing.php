@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterFormProcessing
@@ -30,6 +29,8 @@ class RegisterFormProcessing
             ));
             if ($data['employer']) {
                 $user->setRoles(['ROLE_EMPLOYER']);
+            } else {
+                $user->setRoles(['ROLE_EMPLOYEE']);
             }
 
             $this->entityManager->persist($user);

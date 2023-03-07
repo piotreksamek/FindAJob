@@ -27,9 +27,13 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Offer::class)]
+    private Collection $offers;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->offers = new ArrayCollection();
     }
 
     public function getId(): int
@@ -77,6 +81,32 @@ class Company
         if ($this->users->removeElement($user)) {
             if ($user->getCompany() === $this) {
                 $user->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getOffers(): Collection
+    {
+        return $this->offers;
+    }
+
+    public function addOffer(Offer $offer): self
+    {
+        if (!$this->offers->contains($offer)) {
+            $this->offers->add($offer);
+            $offer->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offer $offer): self
+    {
+        if ($this->offers->removeElement($offer)) {
+            if ($offer->getOwner() === $this) {
+                $offer->setOwner(null);
             }
         }
 

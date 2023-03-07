@@ -11,14 +11,11 @@ security:
                 class: App\Entity\User
                 property: email
 
-        app_company_provider:
-            entity:
-                class: App\Entity\Company
-                property: email
+    role_hierarchy:
+        ROLE_OWNER_COMPANY: ROLE_USER
+        ROLE_EMPLOYER: ROLE_USER
+        ROLE_EMPLOYEE: ROLE_USER
 
-        chain_provider:
-            chain:
-                providers: [ app_user_provider, app_company_provider ]
 
     firewalls:
         dev:
@@ -26,7 +23,8 @@ security:
             security: false
         main:
             lazy: true
-            provider: chain_provider
+            provider: app_user_provider
+            access_denied_handler: App\Security\Handler\AccessDeniedHandler
 
             logout: true
 

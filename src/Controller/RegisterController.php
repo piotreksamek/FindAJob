@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\Type\RegisterCompanyFormType;
 use App\Form\Type\RegisterFormType;
 use App\Service\RegisterFormProcessing;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +19,14 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private RegisterFormProcessing $processing,
+        private RegisterFormProcessing     $processing,
         private UserAuthenticatorInterface $userAuthenticator,
-        private FormLoginAuthenticator $authenticator
-    ) {
+        private FormLoginAuthenticator     $authenticator
+    )
+    {
     }
 
+    #[IsGranted('IS_ANONYMOUS')]
     #[Route('/register', name: 'app_register')]
     public function register(Request $request): Response
     {
@@ -54,6 +57,7 @@ class RegisterController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_EMPLOYER')]
     #[Route('/register/company', name: 'app_register_company')]
     public function registerCompany(Request $request): Response
     {
@@ -65,6 +69,7 @@ class RegisterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+
             $this->processing->processingCompanyForm($data, $user);
 
             $this->userAuthenticator->authenticateUser(

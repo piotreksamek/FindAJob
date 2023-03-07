@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccountController extends AbstractController
 {
-    #[Route('/profile/company', name: 'app_profile_company_owner')]
-    public function profile(): Response
-    {
-        return $this->render('profile/profile.html.twig', []);
-    }
+//    #[Route('/profile', name: 'app_profile_company_owner')]
+//    public function profile(): Response
+//    {
+//        return $this->render('profile/profile.html.twig', []);
+//    }
 }
