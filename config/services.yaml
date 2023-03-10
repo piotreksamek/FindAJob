@@ -11,6 +11,9 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+        bind:
+            $authenticator: '@security.authenticator.form_login.main'
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -20,5 +23,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\EventListener\UserNotificationSentEventListener:
+        tags: { name: kernel.event_listener, event: 'user.notification.sent', method: onAdminEmployeeAdded }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

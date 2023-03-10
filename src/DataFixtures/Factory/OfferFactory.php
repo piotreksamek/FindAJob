@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Factory;
+namespace App\DataFixtures\Factory;
 
 use App\Entity\Offer;
 use Zenstruck\Foundry\ModelFactory;
@@ -36,5 +36,4 @@ class OfferFactory extends ModelFactory
     {
         return Offer::class;
     }
-
 }

@@ -14,7 +14,7 @@
         {% for offer in offers %}
             <tr class="text-sm-start" data-href="{{ path('app_offer_show', { slug: offer.slug }) }}">
                 <td class="text-white" style="font-size: x-large">{{ offer.name }}</td>
-                <td class="text-white">{{ offer.company }}</td>
+                <td class="text-white">{{ offer.owner.getName() }}</td>
                 <td class="text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-building-fill" viewBox="0 0 16 16">
