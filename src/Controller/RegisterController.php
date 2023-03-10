@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\Role;
 use App\Form\Type\RegisterCompanyFormType;
 use App\Form\Type\RegisterFormType;
 use App\Service\RegisterFormProcessing;
@@ -19,11 +20,10 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private RegisterFormProcessing     $processing,
+        private RegisterFormProcessing $processing,
         private UserAuthenticatorInterface $userAuthenticator,
-        private FormLoginAuthenticator     $authenticator
-    )
-    {
+        private FormLoginAuthenticator $authenticator
+    ) {
     }
 
     #[IsGranted('IS_ANONYMOUS')]
@@ -57,7 +57,7 @@ class RegisterController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYER')]
+    #[IsGranted(Role::ROLE_EMPLOYER)]
     #[Route('/register/company', name: 'app_register_company')]
     public function registerCompany(Request $request): Response
     {
@@ -72,11 +72,7 @@ class RegisterController extends AbstractController
 
             $this->processing->processingCompanyForm($data, $user);
 
-            $this->userAuthenticator->authenticateUser(
-                $user,
-                $this->authenticator,
-                $request
-            );
+            $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
 
             return $this->redirectToRoute('app_profile_company_owner');
         }

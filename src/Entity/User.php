@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,7 +19,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    private string $email;
 
     #[ORM\Column]
     private ?string $firstName;
@@ -37,12 +38,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Company $company = null;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Application::class)]
+    private ?Collection $applications = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -56,12 +60,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     public function getRoles(): array
@@ -70,6 +74,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
+    }
+
+    public function hasRoles(string $role): bool
+    {
+        return in_array($role, $this->roles);
     }
 
     public function setRoles(array $roles): self
@@ -131,16 +140,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = $plainPassword;
     }
 
-//    public function getSubmission(): ?Collection
-//    {
-//        return $this->submission;
-//    }
-//
-//    public function setSubmission(?Collection $submission): void
-//    {
-//        $this->submission = $submission;
-//    }
-
     public function getCompany(): ?Company
     {
         return $this->company;
@@ -151,5 +150,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->company = $company;
 
         return $this;
+    }
+
+    public function getApplications(): ?Collection
+    {
+        return $this->applications;
+    }
+
+    public function setApplications(?Collection $applications): void
+    {
+        $this->applications = $applications;
     }
 }

@@ -6,13 +6,14 @@ namespace App\Service;
 
 use App\Entity\Company;
 use App\Entity\User;
+use App\Enum\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterFormProcessing
 {
     public function __construct(
-        private EntityManagerInterface      $entityManager,
+        private EntityManagerInterface $em,
         private UserPasswordHasherInterface $hasher
     ) {
     }
@@ -28,13 +29,13 @@ class RegisterFormProcessing
                 $data['password']
             ));
             if ($data['employer']) {
-                $user->setRoles(['ROLE_EMPLOYER']);
+                $user->setRoles([Role::ROLE_EMPLOYER]);
             } else {
-                $user->setRoles(['ROLE_EMPLOYEE']);
+                $user->setRoles([Role::ROLE_EMPLOYEE]);
             }
 
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            $this->em->persist($user);
+            $this->em->flush();
 
             return $user;
     }
@@ -49,7 +50,7 @@ class RegisterFormProcessing
 
             $user->setRoles(['ROLE_OWNER_COMPANY']);
 
-            $this->entityManager->persist($company);
-            $this->entityManager->flush();
+            $this->em->persist($company);
+            $this->em->flush();
     }
 }

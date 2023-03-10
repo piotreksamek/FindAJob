@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 class RegisterCompanyFormType extends AbstractType
 {
@@ -15,9 +16,12 @@ class RegisterCompanyFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'required' => true
+                'required' => true,
+                'constraints' => [new Length(max: 15)],
             ])
-            ->add('city', TextType::class)
+            ->add('city', TextType::class, [
+                'constraints' => [new Length(max: 20)]
+            ])
             ->add('submit', SubmitType::class);
     }
 }

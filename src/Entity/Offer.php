@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\OfferRepository;
-use Cassandra\Date;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
@@ -34,19 +34,23 @@ class Offer
     #[ORM\Column(length: 255)]
     private string $city;
 
-//    public function __construct(string $name, string $description, string $price, string $city, Company $company)
-//    {
-//        $this->name = $name;
-//        $this->description = $description;
-//        $this->price = $price;
-//        $this->city = $city;
-//        $this->owner = $company;
-//        $this->setSlug($name);
-//        $this->dateTime = new \DateTime();
-//    }
-
     #[ORM\ManyToOne(inversedBy: 'offers')]
     private ?Company $owner = null;
+
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Application::class)]
+    private ?Collection $applications = null;
+
+
+    public function __construct(string $name, string $description, string $price, string $city, Company $company)
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->price = $price;
+        $this->city = $city;
+        $this->owner = $company;
+        $this->setSlug($name);
+        $this->dateTime = new \DateTime();
+    }
 
     public function getId(): int
     {
@@ -100,5 +104,22 @@ class Offer
         $this->owner = $owner;
 
         return $this;
+    }
+
+    public function update(string $city, string $price, string $description): void
+    {
+        $this->description = $description;
+        $this->city = $city;
+        $this->price = $price;
+    }
+
+    public function getApplications(): ?Collection
+    {
+        return $this->applications;
+    }
+
+    public function setApplications(?Collection $applications): void
+    {
+        $this->applications = $applications;
     }
 }
