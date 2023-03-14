@@ -1,31 +1,31 @@
 {% extends 'base.html.twig' %}
 {% block content %}
-    <div class="rounded-4 overflow-hidden"
-         style="background-color: #1d2025; width: 100%; height: auto; margin-bottom: 50px; text-align: left">
-        <div style="overflow: auto; height: 100%; margin: 15px;">
+    <div class="content-background-color rounded-4 overflow-hidden w-100 h-auto mb-3">
+        <div class="h-100 w-100 m-3 overflow-auto text-md-start">
             <div id="title">
-                <div style="width:50%; float:left; text-align: left;">
-                    <h3>Applications</h3>
-                </div>
+                <h3>Applications</h3>
             </div>
-            <table class="table table-hover table-active border-dark rounded-4 overflow-hidden" style="margin-top:20px">
-                <thead class="text-white text-sm-start">
-                <tr>
-                    <th scope="col">Email</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for application in applications %}
-                    <tr class="text-sm-start" data-href="{{ path('app_application_show', { username: app.user.firstName, id: application.id }) }}">
-                        <td class="text-white" style="font-size: x-large">{{ application.owner.email }}</td>
-                        <td class="text-white">{{ application.owner.firstName }}</td>
-                        <td class="text-white">{{ application.owner.lastName }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
         </div>
+    </div>
+    <div>
+        <table class="table table-hover table-active border-dark rounded-4 overflow-hidden">
+            <thead class="text-white text-sm-start">
+            <tr>
+                <th scope="col">Email</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for application in applications %}
+                <tr class="text-sm-start"
+                    data-href="{{ path('app_application_show', { username: app.user.firstName, id: application.id }) }}">
+                    <td class="text-white">{{ application.owner.email }}</td>
+                    <td class="text-white">{{ application.owner.firstName }}</td>
+                    <td class="text-white">{{ application.owner.lastName }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

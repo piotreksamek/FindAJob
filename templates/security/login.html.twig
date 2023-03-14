@@ -1,36 +1,37 @@
 {% extends 'base.html.twig' %}
 {% block content %}
-    <div class="rounded-4 overflow-hidden"
-         style="background-color: #1d2025; width: 100%; height: auto; margin-bottom: 20px; text-align: left">
+    <div class="rounded-4 overflow-hidden content-background-color w-100 h-auto text-md-start">
+        <div>
+            <form method="post" class="row g-3 m-4">
+                <div id="title">
+                    <h1>Please sign in</h1>
+                </div>
+                <div class="col-12">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}"
+                           required autofocus>
+                </div>
+                <div class="col-12">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" name="_password" id="inputPassword" class="form-control" required>
+                </div>
 
-        <form method="post" class="row g-3" style="margin-left: 50px; margin-right: 50px; margin-top: 30px; margin-bottom: 30px;">
-            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <div class="col-12">
-                <label for="inputEmail">Email</label>
-                <input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}" required autofocus>
-            </div>
+                <label>
+                    <input type="checkbox" name="_remember_me" checked/>
+                    Keep me logged in
+                </label>
 
-            <div class="col-12">
-                <label for="inputPassword">Password</label>
-                <input type="password" name="_password" id="inputPassword" class="form-control" required>
-            </div>
-
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-            <label>
-                <input type="checkbox" name="_remember_me" checked/>
-                Keep me logged in
-            </label>
-
-            <div class="col-12">
-                <button class="btn btn-lg btn-primary float-md-start" type="submit">
-                    Sign in
-                </button>
-            </div>
-        </form>
+                <div class="col-12">
+                    <button class="btn btn-lg btn-primary float-md-start" type="submit">
+                        Sign in
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 {% endblock %}

@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block content %}
-    <div class="rounded-4 overflow-hidden"
-         style="background-color: #1d2025; width: 100%; height: auto; margin-bottom: 20px;">
-        <div id="title" style="margin-top: 30px; margin-bottom: 30px;">
-            <h1>Sign In</h1>
-        </div>
-        <div id="form" style="margin-left: 50px; margin-right: 50px; margin-bottom: 50px; text-align: left">
-            {{ form(form) }}
-        </div>
+    <div class="rounded-4 overflow-hidden content-background-color w-100 h-auto text-md-start">
+            <div id="title" class="ms-5 mt-4">
+                <h1>Sign In</h1>
+            </div>
+            <div id="form" class="ms-5 me-5">
+                {{ form(form) }}
+            </div>
     </div>
     {% for message in app.session.flashBag.get('danger') %}
         <div class="alert alert-danger">

@@ -12,9 +12,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class OfferVoter extends Voter
 {
-    const EDIT = 'EDIT';
+    private const EDIT = 'EDIT';
 
-    const DELETE = 'DELETE';
+    private const DELETE = 'DELETE';
 
     protected function supports(string $attribute, $subject): bool
     {
