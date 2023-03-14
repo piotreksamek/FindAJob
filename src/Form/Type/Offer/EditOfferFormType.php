@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Type;
+namespace App\Form\Type\Offer;
 
 use App\Form\Request\Offer\EditOfferRequest;
 use Symfony\Component\OptionsResolver\OptionsResolver;

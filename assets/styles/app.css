@@ -29,3 +29,10 @@ table.table-hover tbody tr:hover {
     cursor: pointer;
     background-color: #101419;
 }
+
+.content-background-color{
+    background-color: #1d2025;
+}
+.h-15{
+    height: 15%;
+}

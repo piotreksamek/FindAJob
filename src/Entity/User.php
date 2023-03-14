@@ -33,8 +33,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $password;
 
-    private ?string $plainPassword;
-
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Company $company = null;
 
@@ -128,16 +126,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
-    }
-
-    public function getPlainPassword()
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(?string $plainPassword): void
-    {
-        $this->plainPassword = $plainPassword;
     }
 
     public function getCompany(): ?Company

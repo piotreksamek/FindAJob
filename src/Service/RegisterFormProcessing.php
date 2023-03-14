@@ -7,6 +7,8 @@ namespace App\Service;
 use App\Entity\Company;
 use App\Entity\User;
 use App\Enum\Role;
+use App\Form\Request\Company\CreateCompanyRequest;
+use App\Form\Request\User\CreateUserRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -18,17 +20,17 @@ class RegisterFormProcessing
     ) {
     }
 
-    public function processingForm(mixed $data): User
+    public function processingForm(CreateUserRequest $createUserRequest): User
     {
             $user = new User();
-            $user->setFirstName($data['firstName']);
-            $user->setLastName($data['lastName']);
-            $user->setEmail($data['email']);
+            $user->setFirstName($createUserRequest->firstName);
+            $user->setLastName($createUserRequest->lastName);
+            $user->setEmail($createUserRequest->email);
             $user->setPassword($this->hasher->hashPassword(
                 $user,
-                $data['password']
+                $createUserRequest->password
             ));
-            if ($data['employer']) {
+            if ($createUserRequest->isEmployer) {
                 $user->setRoles([Role::ROLE_EMPLOYER]);
             } else {
                 $user->setRoles([Role::ROLE_EMPLOYEE]);
@@ -40,15 +42,15 @@ class RegisterFormProcessing
             return $user;
     }
 
-    public function processingCompanyForm(mixed $data, User $user): void
+    public function processingCompanyForm(CreateCompanyRequest $createCompanyRequest, User $user): void
     {
             $company = new Company();
 
-            $company->setName($data['name']);
-            $company->setCity($data['city']);
+            $company->setName($createCompanyRequest->name);
+            $company->setCity($createCompanyRequest->city);
             $company->addUser($user);
 
-            $user->setRoles(['ROLE_OWNER_COMPANY']);
+            $user->setRoles([Role::ROLE_OWNER_COMPANY]);
 
             $this->em->persist($company);
             $this->em->flush();

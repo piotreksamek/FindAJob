@@ -8,7 +8,7 @@ class Role
 {
     public const ROLE_EMPLOYER = 'ROLE_EMPLOYER';
 
-    public const ROLE_COMPANY_OWNER = 'ROLE_OWNER_COMPANY';
+    public const ROLE_OWNER_COMPANY = 'ROLE_OWNER_COMPANY';
 
     public const ROLE_EMPLOYEE = 'ROLE_EMPLOYEE';
 }

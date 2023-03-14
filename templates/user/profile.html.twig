@@ -5,43 +5,44 @@
             {{ message }}
         </div>
     {% endfor %}
-    <div class="rounded-4 overflow-hidden"
-         style="background-color: #1d2025; width: 50%; height: 20%; margin-bottom: 20px;">
-        <div style="overflow: auto; height: 100%; margin: 15px;">
-            <div style="width:50%; float:left; text-align: left;">
-                <h1>{{ app.user.firstName }}</h1>
-                <h5>{{ app.user.lastName }}</h5> <br>
-                <h5>{{ app.user.email }}</h5> <br>
+    <div class="content-background-color rounded-4 overflow-hidden w-100 h-auto mb-3">
+        <div class="h-100 w-100 m-3 overflow-auto">
+            <div class="w-50 float-md-start text-md-start">
+                <h1>{{ app.user.firstName }}</h1><br>
+                <h5>{{ app.user.lastName }}</h5>
+                <h5>{{ app.user.email }}</h5>
             </div>
-            <div style="float:left" class="float-md-end">
-                Edit
+            <div class="text-md-end me-4">
+                <h6>Edit</h6> <br>
             </div>
         </div>
     </div>
     {% if is_granted('ROLE_EMPLOYEE') %}
-    <div class="rounded-4 overflow-hidden"
-         style="background-color: #1d2025; width: 100%; height: 70%; margin-bottom: 20px; text-align: left">
-        <div style="height: 10%; margin: 15px;">
-            <h1>My application</h1>
+        <div class="content-background-color rounded-4 overflow-hidden w-100 h-auto mb-3">
+            <div class="h-100 w-100 m-3 overflow-auto text-md-start">
+                <div id="title">
+                    <h3>Applications</h3>
+                </div>
+            </div>
         </div>
-        <table class="table table-hover table-active border-dark rounded-4 overflow-hidden" style="margin-top:20px">
-            <thead class="text-white text-sm-start">
-            <tr>
-                <th scope="col">Offer</th>
-                <th scope="col">Company</th>
-                <th scope="col">My application</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for application in applications %}
-                <tr class="text-sm-start" data-href="{{ path('app_application_show', { username: app.user.firstName, id: application.id }) }}">
-                    <td class="text-white" style="font-size: x-large">{{ application.offer.name }}</td>
-                    <td class="text-white" style="font-size: x-large">{{ application.offer.owner.name }}</td>
-                    <td class="text-sm-end text-bg-info">{{ application.offer.owner.name }}</td>
+        <div>
+            <table class="table table-hover table-active border-dark rounded-4 overflow-hidden">
+                <thead class="text-white text-sm-start">
+                <tr>
+                    <th scope="col">Offer</th>
+                    <th scope="col">Company</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                {% for application in applications %}
+                    <tr class="text-sm-start"
+                        data-href="{{ path('app_application_show', { username: app.user.firstName, id: application.id }) }}">
+                        <td class="text-white">{{ application.offer.name }}</td>
+                        <td class="text-white">{{ application.offer.owner.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 {% endblock %}

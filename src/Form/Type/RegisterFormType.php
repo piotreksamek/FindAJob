@@ -32,7 +32,7 @@ class RegisterFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'required' => true
             ])
-            ->add('employer', CheckboxType::class, [
+            ->add('isEmployer', CheckboxType::class, [
                 'label' => 'Zaznacz jeśli jesteś pracodawcą',
                 'required' => false,
             ])

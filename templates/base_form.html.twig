@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <div class="rounded-4 overflow-hidden"
+         style="background-color: #1d2025; width: 100%; height: auto; margin-bottom: 50px; text-align: left">
+        <div style="overflow: auto; height: 100%; margin: 15px;">
+            {% block title %} {% endblock %}
+            {{ form(form) }}
+        </div>
+    </div>
+    {% block alert %} {% endblock %}
+{% endblock %}

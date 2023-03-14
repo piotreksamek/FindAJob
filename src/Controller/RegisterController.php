@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\Role;
+use App\Form\Request\Company\CreateCompanyRequest;
+use App\Form\Request\User\CreateUserRequest;
 use App\Form\Type\RegisterCompanyFormType;
 use App\Form\Type\RegisterFormType;
 use App\Service\RegisterFormProcessing;
@@ -30,24 +32,19 @@ class RegisterController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request): Response
     {
-        $form = $this->createForm(RegisterFormType::class);
+        $createUserRequest = new CreateUserRequest();
+
+        $form = $this->createForm(RegisterFormType::class, $createUserRequest);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
             try {
-                $user = $this->processing->processingForm($data);
+                $user = $this->processing->processingForm($createUserRequest);
 
-                $this->userAuthenticator->authenticateUser(
-                    $user,
-                    $this->authenticator,
-                    $request
-                );
+                $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
             } catch (\Exception $exception) {
                 $this->addFlash('danger', 'An account with this email address already exists');
             }
-
 
             return $this->redirectToRoute('app_index');
         }
@@ -64,13 +61,14 @@ class RegisterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $form = $this->createForm(RegisterCompanyFormType::class);
+        $createCompanyRequest = new CreateCompanyRequest();
+
+        $form = $this->createForm(RegisterCompanyFormType::class, $createCompanyRequest);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
 
-            $this->processing->processingCompanyForm($data, $user);
+            $this->processing->processingCompanyForm($createCompanyRequest, $user);
 
             $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
 
