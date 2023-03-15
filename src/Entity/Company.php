@@ -21,7 +21,7 @@ class Company
     #[ORM\Column(unique: true)]
     private string $name;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $city;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
@@ -30,8 +30,10 @@ class Company
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Offer::class)]
     private Collection $offers;
 
-    public function __construct()
+    public function __construct(string $name, ?string $city)
     {
+        $this->name = $name;
+        $this->city = $city;
         $this->users = new ArrayCollection();
         $this->offers = new ArrayCollection();
     }
@@ -46,19 +48,9 @@ class Company
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getCity(): ?string
     {
         return $this->city;
-    }
-
-    public function setCity(?string $city): void
-    {
-        $this->city = $city;
     }
 
     public function getUsers(): Collection
@@ -70,7 +62,7 @@ class Company
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setCompany($this);
+            $user->addCompany($this);
         }
 
         return $this;
@@ -80,7 +72,7 @@ class Company
     {
         if ($this->users->removeElement($user)) {
             if ($user->getCompany() === $this) {
-                $user->setCompany(null);
+                $user->addCompany(null);
             }
         }
 

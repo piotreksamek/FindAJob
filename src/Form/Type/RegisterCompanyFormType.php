@@ -20,7 +20,8 @@ class RegisterCompanyFormType extends AbstractType
                 'constraints' => [new Length(max: 15)],
             ])
             ->add('city', TextType::class, [
-                'constraints' => [new Length(max: 20)]
+                'constraints' => [new Length(max: 20)],
+                'required' => false,
             ])
             ->add('submit', SubmitType::class);
     }

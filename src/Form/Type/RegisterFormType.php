@@ -6,6 +6,7 @@ namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,7 +26,7 @@ class RegisterFormType extends AbstractType
                 'constraints' => [new Length(max: 15)],
                 'required' => true
             ])
-            ->add('email', TextType::class, [
+            ->add('email', EmailType::class, [
                 'constraints' => [new Length(max: 30)],
                 'required' => true
             ])

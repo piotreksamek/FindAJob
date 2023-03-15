@@ -10,11 +10,14 @@ use App\Form\Request\Company\CreateCompanyRequest;
 use App\Form\Request\User\CreateUserRequest;
 use App\Form\Type\RegisterCompanyFormType;
 use App\Form\Type\RegisterFormType;
-use App\Service\RegisterFormProcessing;
+use App\Message\CreateCompanyCommand;
+use App\Message\CreateUserCommand;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
@@ -22,9 +25,10 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private RegisterFormProcessing $processing,
+        private UserRepository $userRepository,
         private UserAuthenticatorInterface $userAuthenticator,
-        private FormLoginAuthenticator $authenticator
+        private FormLoginAuthenticator $authenticator,
+        private MessageBusInterface $bus
     ) {
     }
 
@@ -38,15 +42,27 @@ class RegisterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $user = $this->processing->processingForm($createUserRequest);
-
-                $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
-            } catch (\Exception $exception) {
+            try{
+            $user = $this->bus->dispatch(new CreateUserCommand(
+                $createUserRequest->email,
+                $createUserRequest->firstName,
+                $createUserRequest->lastName,
+                $createUserRequest->password,
+                $createUserRequest->isEmployer
+            ));
+            } catch(\Exception $exception){
                 $this->addFlash('danger', 'An account with this email address already exists');
+
+                return $this->redirectToRoute('app_register');
+
             }
 
-            return $this->redirectToRoute('app_index');
+            $email = $user->getMessage()->getEmail();
+            $user = $this->userRepository->findOneBy(['email' => $email]);
+
+            $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
+
+            return $this->redirectToRoute('app_user_profile');
         }
 
         return $this->render('security/register.html.twig', [
@@ -68,11 +84,15 @@ class RegisterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->processing->processingCompanyForm($createCompanyRequest, $user);
-
+            $this->bus->dispatch(new CreateCompanyCommand(
+                $createCompanyRequest->name,
+                $createCompanyRequest->city ?? null,
+                $user
+            ));
             $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
 
             return $this->redirectToRoute('app_profile_company_owner');
+
         }
 
         return $this->render('security/register.html.twig', [

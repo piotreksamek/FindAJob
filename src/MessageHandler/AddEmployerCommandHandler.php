@@ -30,7 +30,7 @@ class AddEmployerCommandHandler implements MessageHandlerInterface
 
             throw new \Exception('User has company');
         }
-        $employer->setCompany($company);
+        $employer->addCompany($company);
 
         $this->em->persist($employer);
         $this->em->flush();

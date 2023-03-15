@@ -9,8 +9,8 @@ class AddOfferCommand
     public function __construct(
         private string $name,
         private string $description,
-        private string $price,
-        private string $city,
+        private ?string $price,
+        private ?string $city,
         private int $companyId
     ) {
     }
@@ -25,12 +25,12 @@ class AddOfferCommand
         return $this->description;
     }
 
-    public function getPrice(): string
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
