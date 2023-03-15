@@ -45,7 +45,7 @@ class OfferController extends AbstractController
 
     #[IsGranted(Role::ROLE_EMPLOYER)]
     #[Route('profile/company/new/offer', name: 'app_new_offer')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, MessageBusInterface $bus): Response
     {
         $createOfferRequest = new CreateOfferRequest();
 
@@ -53,10 +53,8 @@ class OfferController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $company = $this->getUser()->getCompany();
-
-            $offer = new Offer(
+            $bus->dispatch(new AddOfferCommand(
                 $createOfferRequest->name,
                 $createOfferRequest->description,
                 $createOfferRequest->price ?? null,
@@ -64,8 +62,9 @@ class OfferController extends AbstractController
                 $company->getId()
             ));
 
-            $entityManager->persist($offer);
-            $entityManager->flush();
+            $this->addFlash('success', 'Offer added successfully!');
+
+            return $this->redirectToRoute('app_profile_company_owner');
         }
 
         return $this->render('offer/new_offer.html.twig', [

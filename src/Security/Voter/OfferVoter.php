@@ -18,7 +18,7 @@ class OfferVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::EDIT])) {
+        if (!in_array($attribute, [self::EDIT, self::DELETE])) {
             return false;
         }
 
@@ -34,14 +34,13 @@ class OfferVoter extends Voter
         /** @var User $user */
         $user = $token->getUser();
 
-        if(!$user){
+        if (!$user) {
             return false;
         }
 
         $company = $user->getCompany();
 
         if (!$company instanceof Company) {
-
             return false;
         }
 
@@ -49,15 +48,15 @@ class OfferVoter extends Voter
             throw new \Exception('Wront type somehow passed');
         }
 
-        /** @var Offer $post */
-        $post = $subject;
+        /** @var Offer $offer */
+        $offer = $subject;
 
         switch ($attribute) {
             case self::EDIT:
-                return $this->canEdit($post, $company);
+                return $this->canEdit($offer, $company);
 
             case self::DELETE:
-                return $this->canDelete($post, $company);
+                return $this->canDelete($offer, $company);
         }
 
         throw new \LogicException('This code should not be reached!');
