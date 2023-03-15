@@ -22,8 +22,8 @@ abstract class AbstractOfferFormType extends AbstractType
             ])
             ->add('price', TextType::class, [
                 'constraints' => [new Length(max: 10)],
-                'label' => 'Salary*',
-                'required' => true
+                'label' => 'Salary',
+                'required' => false
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description*',

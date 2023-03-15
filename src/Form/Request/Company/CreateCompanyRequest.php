@@ -8,5 +8,5 @@ class CreateCompanyRequest
 {
     public string $name;
 
-    public string $city;
+    public ?string $city;
 }

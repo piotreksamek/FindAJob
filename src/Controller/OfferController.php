@@ -59,10 +59,10 @@ class OfferController extends AbstractController
             $offer = new Offer(
                 $createOfferRequest->name,
                 $createOfferRequest->description,
-                $createOfferRequest->price,
-                $createOfferRequest->city,
-                $company
-            );
+                $createOfferRequest->price ?? null,
+                $createOfferRequest->city ?? null,
+                $company->getId()
+            ));
 
             $entityManager->persist($offer);
             $entityManager->flush();

@@ -22,10 +22,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $email;
 
     #[ORM\Column]
-    private ?string $firstName;
+    private string $firstName;
 
     #[ORM\Column]
-    private ?string $lastName;
+    private string $lastName;
 
     #[ORM\Column]
     private array $roles = [];
@@ -39,6 +39,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Application::class)]
     private ?Collection $applications = null;
 
+    public function __construct(string $email, string $firstName, string $lastName, array $roles)
+    {
+        $this->email = $email;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->roles = $roles;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,13 +55,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     public function getUserIdentifier(): string
@@ -74,16 +75,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function hasRoles(string $role): bool
-    {
-        return in_array($role, $this->roles);
-    }
-
-    public function setRoles(array $roles): self
+    public function addRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function hasRoles(string $role): bool
+    {
+        return in_array($role, $this->roles);
     }
 
     public function getPassword(): string
@@ -108,24 +109,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = null;
     }
 
-    public function getFirstName(): ?string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName(): ?string
+    public function getLastName(): string
     {
         return $this->lastName;
-    }
-
-    public function setLastName(?string $lastName): void
-    {
-        $this->lastName = $lastName;
     }
 
     public function getCompany(): ?Company
@@ -133,7 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->company;
     }
 
-    public function setCompany(?Company $company): self
+    public function addCompany(?Company $company): self
     {
         $this->company = $company;
 
@@ -145,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->applications;
     }
 
-    public function setApplications(?Collection $applications): void
+    public function addApplications(?Collection $applications): void
     {
         $this->applications = $applications;
     }

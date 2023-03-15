@@ -32,7 +32,12 @@ class ApplicationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $this->getUser();
-            $bus->dispatch(new AddApplicationCommand($user, $offer, $applicationRequest->description));
+            $bus->dispatch(new AddApplicationCommand($user,
+                $offer,
+                $applicationRequest->description
+            ));
+
+            return $this->redirectToRoute('app_user_profile');
         }
 
         return $this->render('application/create.html.twig', [

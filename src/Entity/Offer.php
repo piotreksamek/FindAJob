@@ -22,8 +22,8 @@ class Offer
     #[ORM\Column(length: 255, type: 'text')]
     private string $description;
 
-    #[ORM\Column(length: 255)]
-    private string $price;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $price ;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTime $dateTime;
@@ -31,24 +31,29 @@ class Offer
     #[ORM\Column(length: 100, unique: true)]
     private string $slug;
 
-    #[ORM\Column(length: 255)]
-    private string $city;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city;
 
     #[ORM\ManyToOne(inversedBy: 'offers')]
-    private ?Company $owner = null;
+    private Company $owner;
 
     #[ORM\OneToMany(mappedBy: 'offer', targetEntity: Application::class)]
     private ?Collection $applications = null;
 
 
-    public function __construct(string $name, string $description, string $price, string $city, Company $company)
-    {
+    public function __construct(
+        string $name,
+        string $description,
+        ?string $price,
+        ?string $city,
+        Company $company
+    ) {
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
         $this->city = $city;
         $this->owner = $company;
-        $this->setSlug($name);
+        $this->slug = strtr($this->name, ' ', '-');
         $this->dateTime = new \DateTime();
     }
 
@@ -67,7 +72,7 @@ class Offer
         return $this->description;
     }
 
-    public function getPrice(): string
+    public function getPrice(): ?string
     {
         return $this->price;
     }
@@ -82,31 +87,17 @@ class Offer
         return $this->slug;
     }
 
-    public function setSlug(string $slug): void
-    {
-        $slug = strtr($this->name, ' ', '-');
-
-        $this->slug = $slug;
-    }
-
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    public function getOwner(): ?Company
+    public function getOwner(): Company
     {
         return $this->owner;
     }
 
-    public function setOwner(?Company $owner): self
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function update(string $city, string $price, string $description): void
+    public function update(?string $city, ?string $price, string $description): void
     {
         $this->description = $description;
         $this->city = $city;
@@ -118,7 +109,7 @@ class Offer
         return $this->applications;
     }
 
-    public function setApplications(?Collection $applications): void
+    public function addApplications(?Collection $applications): void
     {
         $this->applications = $applications;
     }
