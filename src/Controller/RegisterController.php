@@ -25,10 +25,10 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserRepository             $userRepository,
+        private UserRepository $userRepository,
         private UserAuthenticatorInterface $userAuthenticator,
-        private FormLoginAuthenticator     $authenticator,
-        private MessageBusInterface        $bus
+        private FormLoginAuthenticator $authenticator,
+        private MessageBusInterface $bus
     )
     {
     }
