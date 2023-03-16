@@ -56,7 +56,7 @@ class RegisterController extends AbstractController
                 return $this->redirectToRoute('app_register');
 
             }
-
+            // TODO Do email verification
             $email = $user->getMessage()->getEmail();
             $user = $this->userRepository->findOneBy(['email' => $email]);
 

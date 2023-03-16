@@ -18,8 +18,8 @@ class CreateUserCommand
 
     public function __construct(
         string $email,
-        string $firstName,
-        string $lastName,
+        ?string $firstName,
+        ?string $lastName,
         string $password,
         bool $isEmployer
     ) {

@@ -6,9 +6,18 @@ namespace App\Tests;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class RegisterUserTest extends WebTestCase
 {
+    use ResetDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->_resetDatabase();
+    }
+
     public function testUserCanBeRegistered()
     {
         $client = static::createClient();
@@ -31,9 +40,8 @@ class RegisterUserTest extends WebTestCase
         $this->assertResponseRedirects('/profile');
     }
 
-    public function testUserCanNotBeRegistered()
+    public function testUserCannotBeRegistered()
     {
-        $this->markTestSkipped();
         $client = static::createClient();
 
         $crawler = $client->request('GET', '/register');
@@ -47,11 +55,7 @@ class RegisterUserTest extends WebTestCase
 
         $client->submit($form);
 
-        $this->assertSelectorExists('.form-error-message');
-//        $userRepository = $client->getContainer()->get('doctrine')->getRepository(User::class);
-//        $user = $userRepository->findBy(['email' => 'john.doe@example.com']);
-//
-//        $this->assertCount(1, $user);
-//        $this->assertResponseRedirects('/');
+        $this->assertStringContainsString('This value should not be blank.', $client->getResponse()->getContent());
+        $this->assertStringContainsString('This value is not a valid email address.', $client->getResponse()->getContent());
     }
 }
