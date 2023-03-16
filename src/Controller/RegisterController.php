@@ -25,11 +25,12 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepository             $userRepository,
         private UserAuthenticatorInterface $userAuthenticator,
-        private FormLoginAuthenticator $authenticator,
-        private MessageBusInterface $bus
-    ) {
+        private FormLoginAuthenticator     $authenticator,
+        private MessageBusInterface        $bus
+    )
+    {
     }
 
     #[IsGranted('IS_ANONYMOUS')]
@@ -42,15 +43,15 @@ class RegisterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try{
-            $user = $this->bus->dispatch(new CreateUserCommand(
-                $createUserRequest->email,
-                $createUserRequest->firstName,
-                $createUserRequest->lastName,
-                $createUserRequest->password,
-                $createUserRequest->isEmployer
-            ));
-            } catch(\Exception $exception){
+            try {
+                $user = $this->bus->dispatch(new CreateUserCommand(
+                    $createUserRequest->email,
+                    $createUserRequest->firstName,
+                    $createUserRequest->lastName,
+                    $createUserRequest->password,
+                    $createUserRequest->isEmployer
+                ));
+            } catch (\Exception $exception) {
                 $this->addFlash('danger', 'An account with this email address already exists');
 
                 return $this->redirectToRoute('app_register');
@@ -74,6 +75,13 @@ class RegisterController extends AbstractController
     #[Route('/register/company', name: 'app_register_company')]
     public function registerCompany(Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if($user->hasRoles(Role::ROLE_OWNER_COMPANY) || $user->getCompany() !== null){
+            return $this->redirectToRoute('app_profile_company_owner');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 

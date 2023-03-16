@@ -7,38 +7,41 @@ namespace App\Tests;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class LoginUserTest extends WebTestCase
 {
+    private $client;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->client = static::createClient();
+
+    }
+
     public function testUserCanBeLogin()
     {
-        $client = static::createClient();
 
         /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get('doctrine')->getRepository(User::class);
-
         $user = $userRepository->findUserByEmail('john.doe@example.com');
 
-        $client->loginUser($user);
-        $client->request('GET', '/profile');
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/profile');
 
         $this->assertResponseIsSuccessful();
-        $this->assertNull($client->getRequest()->getSession()->get('_security.last_error'));
+        $this->assertNull($this->client->getRequest()->getSession()->get('_security.last_error'));
     }
 
     public function testUserCannotBeLogin()
     {
-        $client = static::createClient();
-
-        $crawler = $client->request('GET', '/login');
+        $crawler = $this->client->request('GET', '/login');
 
         $form = $crawler->selectButton('Sign in')->form();
         $form['email'] = 'john.doe@example.com';
-        $form['_password'] = 'password';
+        $form['_password'] = 'invalid-password';
         $form['_remember_me'] = 'on';
-        $client->submit($form);
+        $this->client->submit($form);
 
-        $this->assertNotNull($client->getRequest()->getSession()->get('_security.last_error'));
+        $this->assertNotNull($this->client->getRequest()->getSession()->get('_security.last_error'));
     }
 }
