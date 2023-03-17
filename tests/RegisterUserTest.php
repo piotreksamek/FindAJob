@@ -12,12 +12,6 @@ class RegisterUserTest extends WebTestCase
 {
     use ResetDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->_resetDatabase();
-    }
-
     public function testUserCanBeRegistered()
     {
         $client = static::createClient();

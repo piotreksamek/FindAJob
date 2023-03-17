@@ -23,6 +23,10 @@ class CompanyController extends AbstractController
     #[Route('/profile/company', name: 'app_profile_company_owner')]
     public function show(CompanyRepository $companyRepository, Request $request, MessageBusInterface $bus): Response
     {
+        if ($this->getUser()->getCompany() === null) {
+            return $this->redirectToRoute('app_register_company');
+        }
+
         /** @var Company $company */
         $company = $companyRepository->findOneBy(['id' => $this->getUser()->getCompany()]);
         $companyEmployers = $company->getUsers()->toArray();

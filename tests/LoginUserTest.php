@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Tests\Fixtures\Builder\UserBuilder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class LoginUserTest extends WebTestCase
 {
+    use ResetDatabase;
+
     private $client;
+
+    private $userBuilder;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->client = static::createClient();
-
+        $this->userBuilder = self::getContainer()->get(UserBuilder::class);
     }
 
     public function testUserCanBeLogin()
     {
-
-        /** @var UserRepository $userRepository */
-        $userRepository = static::getContainer()->get('doctrine')->getRepository(User::class);
-        $user = $userRepository->findUserByEmail('john.doe@example.com');
+        $user = $this->userBuilder->createEmployee();
 
         $this->client->loginUser($user);
         $this->client->request('GET', '/profile');
@@ -34,10 +36,12 @@ class LoginUserTest extends WebTestCase
 
     public function testUserCannotBeLogin()
     {
+        $this->userBuilder->createEmployee();
+
         $crawler = $this->client->request('GET', '/login');
 
         $form = $crawler->selectButton('Sign in')->form();
-        $form['email'] = 'john.doe@example.com';
+        $form['email'] = 'employer@gmail.com';
         $form['_password'] = 'invalid-password';
         $form['_remember_me'] = 'on';
         $this->client->submit($form);
