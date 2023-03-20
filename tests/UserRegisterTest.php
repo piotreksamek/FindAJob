@@ -8,7 +8,7 @@ use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class RegisterUserTest extends WebTestCase
+class UserRegisterTest extends WebTestCase
 {
     use ResetDatabase;
 
