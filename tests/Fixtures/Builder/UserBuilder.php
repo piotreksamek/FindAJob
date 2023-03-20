@@ -57,12 +57,22 @@ class UserBuilder implements UserBuilderInterface
 
     public function createCompanyOwner(): User
     {
-        return $this->createUser(
+        $user = $this->createUser(
             'company.owner@gmail.com',
             'company',
             'owner',
-            [Role::ROLE_OWNER_COMPANY],
+            [Role::ROLE_EMPLOYER],
             'companyowner'
         );
+
+        $company = new Company('Facebook', 'Warsaw' , $user);
+
+        $user->addRoles([Role::ROLE_OWNER_COMPANY]);
+        $user->addCompany($company);
+
+        $this->entityManager->persist($company);
+        $this->entityManager->flush();
+
+        return $user;
     }
 }

@@ -31,5 +31,8 @@ services:
     App\Tests\Fixtures\Builder\UserBuilder:
         public: true
 
-    App\Tests\Fixtures\Builder\CompanyBuilder:
+    App\Tests\Fixtures\Builder\OfferBuilder:
+        public: true
+
+    App\Tests\Fixtures\Builder\ApplicationBuilder:
         public: true

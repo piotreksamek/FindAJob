@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ApplicationController extends AbstractController
 {
+    #[IsGranted(Role::ROLE_EMPLOYEE)]
     #[Route('/offers/application/{slug}', name: 'app_application')]
     public function application(Offer $offer, Request $request, MessageBusInterface $bus): Response
     {
