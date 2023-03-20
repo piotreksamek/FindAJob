@@ -22,7 +22,8 @@ class CreateCompanyCommandHandler implements MessageHandlerInterface
 
         $company = new Company(
             $createCompanyCommand->getName(),
-            $createCompanyCommand->getCity()
+            $createCompanyCommand->getCity(),
+            $createCompanyCommand->getUser()
         );
 
         $company->addUser($user);

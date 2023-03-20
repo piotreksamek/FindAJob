@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
 {
     #[ORM\Id]
@@ -30,10 +30,14 @@ class Company
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Offer::class)]
     private Collection $offers;
 
-    public function __construct(string $name, ?string $city)
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private User $owner;
+
+    public function __construct(string $name, ?string $city, User $owner)
     {
         $this->name = $name;
         $this->city = $city;
+        $this->owner = $owner;
         $this->users = new ArrayCollection();
         $this->offers = new ArrayCollection();
     }
@@ -103,5 +107,10 @@ class Company
         }
 
         return $this;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
     }
 }

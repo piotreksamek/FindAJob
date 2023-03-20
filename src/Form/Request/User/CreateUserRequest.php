@@ -8,9 +8,9 @@ class CreateUserRequest
 {
     public string $email;
 
-    public ?string $firstName;
+    public string $firstName;
 
-    public ?string $lastName;
+    public string $lastName;
 
     public string $password;
 
