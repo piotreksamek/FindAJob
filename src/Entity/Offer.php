@@ -23,7 +23,7 @@ class Offer
     private string $description;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $price ;
+    private ?string $price;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTime $dateTime;
@@ -42,18 +42,19 @@ class Offer
 
 
     public function __construct(
-        string $name,
-        string $description,
+        string  $name,
+        string  $description,
         ?string $price,
         ?string $city,
         Company $company
-    ) {
+    )
+    {
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
         $this->city = $city;
         $this->owner = $company;
-        $this->slug = strtr($this->name, ' ', '-');
+        $this->slug = strtolower($this->owner->getName()) . '-' . strtr($this->name, ' ', '-');
         $this->dateTime = new \DateTime();
     }
 

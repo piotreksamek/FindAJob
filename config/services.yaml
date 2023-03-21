@@ -24,9 +24,8 @@ services:
             - '../src/Kernel.php'
 
     App\EventListener\UserNotificationSentEventListener:
-        tags: { name: kernel.event_listener, event: 'user.notification.sent', method: onAdminEmployeeAdded }
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+        tags:
+            - { name: kernel.event_listener, event: 'App\Event\UserNotificationSentEvent', method: 'onAddedEmployee' }
 
     App\Tests\Fixtures\Builder\UserBuilder:
         public: true
