@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CreateOfferFormType extends AbstractOfferFormType
 {
@@ -16,7 +17,7 @@ class CreateOfferFormType extends AbstractOfferFormType
     {
         $builder
             ->add('name', TextType::class, [
-                'constraints' => [new Length(max: 30)],
+                'constraints' => [new Length(max: 30), new NotBlank()],
                     'label' => 'Offer Name*',
                     'required' => true
                 ]

@@ -8,20 +8,16 @@ use App\Entity\Application;
 use App\Entity\Offer;
 use App\Entity\User;
 use App\Enum\Role;
-use App\Event\UserNotificationSentEvent;
-use App\EventListener\UserNotificationSentEventListener;
 use App\Form\Request\Application\ApplicationRequest;
 use App\Form\Type\ApplicationFormType;
 use App\Message\AddApplicationCommand;
 use App\Repository\ApplicationRepository;
-use PHPUnit\Util\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ApplicationController extends AbstractController
 {

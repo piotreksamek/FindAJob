@@ -29,8 +29,7 @@ class RegisterController extends AbstractController
         private UserAuthenticatorInterface $userAuthenticator,
         private FormLoginAuthenticator $authenticator,
         private MessageBusInterface $bus
-    )
-    {
+    ) {
     }
 
     #[IsGranted('IS_ANONYMOUS')]

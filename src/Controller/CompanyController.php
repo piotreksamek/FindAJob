@@ -22,8 +22,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompanyController extends AbstractController
 {
     public function __construct(
-        private CompanyRepository        $companyRepository,
-        private MessageBusInterface      $bus,
+        private CompanyRepository $companyRepository,
+        private MessageBusInterface $bus,
         private EventDispatcherInterface $eventDispatcher
     )
     {
