@@ -14,4 +14,9 @@ class ApplicationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Application::class);
     }
+
+    public function findApplicationByUserId($userId): ?array
+    {
+        return $this->findBy(['owner' => $userId]);
+    }
 }

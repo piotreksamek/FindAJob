@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Company;
 use App\Entity\Offer;
 use App\Enum\Role;
 use App\Form\Request\Offer\CreateOfferRequest;
 use App\Form\Request\Offer\EditOfferRequest;
 use App\Form\Type\Offer\CreateOfferFormType;
 use App\Form\Type\Offer\EditOfferFormType;
-use App\Message\AddOfferCommand;
-use App\Repository\ApplicationRepository;
 use App\Repository\OfferRepository;
-use App\Service\OfferValidator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\OfferService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OfferController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $em, private OfferValidator $offerValidator)
+    public function __construct(private OfferService $offerService)
     {
     }
 
@@ -48,14 +43,10 @@ class OfferController extends AbstractController
 
     #[IsGranted(Role::ROLE_EMPLOYER)]
     #[Route('profile/company/new/offer', name: 'app_new_offer')]
-    public function new(Request $request, MessageBusInterface $bus, OfferRepository $offerRepository): Response
+    public function new(Request $request): Response
     {
-        $createOfferRequest = new CreateOfferRequest();
-
-        $offers = $this->getUser()->getCompany()->getOffers();
-
-        $form = $this->createForm(CreateOfferFormType::class, $createOfferRequest);
-        $form->handleRequest($request);
+        $company = $this->getUser()->getCompany();
+        $offers = $company->getOffers();
 
         if (count($offers->toArray()) === 3) {
             $this->addFlash('danger', 'You cannot add more offers');
@@ -63,24 +54,18 @@ class OfferController extends AbstractController
             return $this->redirectToRoute('app_profile_company_owner');
         }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $createOfferRequest = new CreateOfferRequest();
+        $form = $this->createForm(CreateOfferFormType::class, $createOfferRequest);
+        $form->handleRequest($request);
 
-            /** @var Company $company */
-            $company = $this->getUser()->getCompany();
-            $canAddNewOffer = $this->offerValidator->validateNewOffer($company, $createOfferRequest->name);
-            if (!$canAddNewOffer) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$this->offerService->validateNewOffer($company, $createOfferRequest->name)) {
                 $this->addFlash('danger', 'You already have an offer with this name');
 
                 return $this->redirectToRoute('app_profile_company_owner');
             }
 
-            $bus->dispatch(new AddOfferCommand(
-                $createOfferRequest->name,
-                $createOfferRequest->description,
-                $createOfferRequest->price ?? null,
-                $createOfferRequest->city ?? null,
-                $company->getId()
-            ));
+            $this->offerService->addNewOffer($createOfferRequest, $company);
 
             $this->addFlash('success', 'Offer added successfully!');
 
@@ -103,11 +88,7 @@ class OfferController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $offer->update($editOfferRequest->city, $editOfferRequest->price, $editOfferRequest->description);
-
-            $this->em->persist($offer);
-            $this->em->flush();
+            $this->offerService->updateOffer($offer, $editOfferRequest);
 
             return $this->redirectToRoute('app_offer_show', ['slug' => $offer->getSlug()]);
         }
@@ -119,17 +100,11 @@ class OfferController extends AbstractController
     }
 
     #[Route('/offers/delete/{slug}', name: 'app_delete_offer')]
-    public function delete(Offer $offer, ApplicationRepository $applicationRepository): Response
+    public function delete(Offer $offer): Response
     {
         $this->denyAccessUnlessGranted('DELETE', $offer);
 
-        $applications = $applicationRepository->findBy(['owner' => $offer->getOwner()->getId()]);
-        foreach ($applications as $application) {
-            $this->em->remove($application);
-        }
-        $this->em->remove($offer);
-        $this->em->flush();
-
+        $this->offerService->deleteOffer($offer);
 
         return $this->redirectToRoute('app_profile_company_owner');
     }
