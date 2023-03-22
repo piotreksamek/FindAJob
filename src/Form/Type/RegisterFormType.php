@@ -36,7 +36,7 @@ class RegisterFormType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('isEmployer', CheckboxType::class, [
-                'label' => 'Zaznacz jeśli jesteś pracodawcą',
+                'label' => 'Tick if you are an employer',
                 'required' => false,
             ])
             ->add('save', SubmitType::class);

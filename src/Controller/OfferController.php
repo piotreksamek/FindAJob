@@ -10,19 +10,17 @@ use App\Form\Request\Offer\CreateOfferRequest;
 use App\Form\Request\Offer\EditOfferRequest;
 use App\Form\Type\Offer\CreateOfferFormType;
 use App\Form\Type\Offer\EditOfferFormType;
-use App\Message\AddOfferCommand;
 use App\Repository\OfferRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\OfferService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OfferController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $em)
+    public function __construct(private OfferService $offerService)
     {
     }
 
@@ -45,22 +43,29 @@ class OfferController extends AbstractController
 
     #[IsGranted(Role::ROLE_EMPLOYER)]
     #[Route('profile/company/new/offer', name: 'app_new_offer')]
-    public function new(Request $request, MessageBusInterface $bus): Response
+    public function new(Request $request): Response
     {
-        $createOfferRequest = new CreateOfferRequest();
+        $company = $this->getUser()->getCompany();
+        $offers = $company->getOffers();
 
+        if (count($offers->toArray()) === 3) {
+            $this->addFlash('danger', 'You cannot add more offers');
+
+            return $this->redirectToRoute('app_profile_company_owner');
+        }
+
+        $createOfferRequest = new CreateOfferRequest();
         $form = $this->createForm(CreateOfferFormType::class, $createOfferRequest);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $company = $this->getUser()->getCompany();
-            $bus->dispatch(new AddOfferCommand(
-                $createOfferRequest->name,
-                $createOfferRequest->description,
-                $createOfferRequest->price ?? null,
-                $createOfferRequest->city ?? null,
-                $company->getId()
-            ));
+            if (!$this->offerService->validateNewOffer($company, $createOfferRequest->name)) {
+                $this->addFlash('danger', 'You already have an offer with this name');
+
+                return $this->redirectToRoute('app_profile_company_owner');
+            }
+
+            $this->offerService->addNewOffer($createOfferRequest, $company);
 
             $this->addFlash('success', 'Offer added successfully!');
 
@@ -83,11 +88,7 @@ class OfferController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $offer->update($editOfferRequest->city, $editOfferRequest->price, $editOfferRequest->description);
-
-            $this->em->persist($offer);
-            $this->em->flush();
+            $this->offerService->updateOffer($offer, $editOfferRequest);
 
             return $this->redirectToRoute('app_offer_show', ['slug' => $offer->getSlug()]);
         }
@@ -103,8 +104,7 @@ class OfferController extends AbstractController
     {
         $this->denyAccessUnlessGranted('DELETE', $offer);
 
-        $this->em->remove($offer);
-        $this->em->flush();
+        $this->offerService->deleteOffer($offer);
 
         return $this->redirectToRoute('app_profile_company_owner');
     }

@@ -6,37 +6,37 @@ namespace App\Controller;
 
 use App\Entity\Application;
 use App\Entity\Offer;
-use App\Entity\User;
 use App\Enum\Role;
 use App\Form\Request\Application\ApplicationRequest;
 use App\Form\Type\ApplicationFormType;
-use App\Message\AddApplicationCommand;
 use App\Repository\ApplicationRepository;
+use App\Service\ApplicationAdder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApplicationController extends AbstractController
 {
     #[IsGranted(Role::ROLE_EMPLOYEE)]
     #[Route('/offers/application/{slug}', name: 'app_application')]
-    public function application(Offer $offer, Request $request, MessageBusInterface $bus): Response
+    public function application(Offer $offer, Request $request, ApplicationAdder $applicationAdder): Response
     {
         $applicationRequest = new ApplicationRequest();
-
         $form = $this->createForm(ApplicationFormType::class, $applicationRequest);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
-            $user = $this->getUser();
-            $bus->dispatch(new AddApplicationCommand($user,
+            $canAddApplication = $applicationAdder->addApplication(
+                $this->getUser(),
                 $offer,
                 $applicationRequest->description
-            ));
+            );
+
+            if ($canAddApplication) {
+                return $this->redirectToRoute('app_offer_show', ['slug' => $offer->getSlug()]);
+            }
 
             return $this->redirectToRoute('app_user_profile');
         }

@@ -33,6 +33,9 @@ class Company
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private User $owner;
 
+    #[ORM\OneToMany(mappedBy: 'Sender', targetEntity: Message::class)]
+    private Collection $messages;
+
     public function __construct(string $name, ?string $city, User $owner)
     {
         $this->name = $name;
@@ -40,6 +43,7 @@ class Company
         $this->owner = $owner;
         $this->users = new ArrayCollection();
         $this->offers = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): int
@@ -112,5 +116,10 @@ class Company
     public function getOwner(): User
     {
         return $this->owner;
+    }
+
+    public function getMessages(): Collection
+    {
+        return $this->messages;
     }
 }

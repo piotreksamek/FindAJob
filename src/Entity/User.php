@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -39,12 +40,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Application::class)]
     private ?Collection $applications = null;
 
+    #[ORM\OneToMany(mappedBy: 'Recipient', targetEntity: Message::class)]
+    private Collection $messages;
+
     public function __construct(string $email, string $firstName, string $lastName, array $roles)
     {
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->roles = $roles;
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,5 +144,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addApplications(?Collection $applications): void
     {
         $this->applications = $applications;
+    }
+
+    public function getMessages(): Collection
+    {
+        return $this->messages;
     }
 }

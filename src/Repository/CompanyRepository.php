@@ -10,14 +10,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
-/**
- * @extends ServiceEntityRepository<User>
- *
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class CompanyRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
@@ -52,5 +44,12 @@ class CompanyRepository extends ServiceEntityRepository implements PasswordUpgra
         $user->setPassword($newHashedPassword);
 
         $this->save($user, true);
+    }
+
+    public function findCompanyByCompanyId(Company $company): ?Company
+    {
+        /** @var Company $company */
+        $company =  $this->findOneBy(['id' => $company]);
+        return $company;
     }
 }

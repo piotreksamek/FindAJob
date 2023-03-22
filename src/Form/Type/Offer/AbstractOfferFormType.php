@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class AbstractOfferFormType extends AbstractType
 {
@@ -17,17 +18,16 @@ abstract class AbstractOfferFormType extends AbstractType
     {
         $builder
             ->add('city', TextType::class,[
-                'constraints' => [new Length(max: 30)],
                 'required' => false,
             ])
             ->add('price', TextType::class, [
-                'constraints' => [new Length(max: 10)],
                 'label' => 'Salary',
-                'required' => false
+                'required' => false,
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description*',
-                'required' => true
+                'required' => true,
+                'constraints' => [new NotBlank()],
             ])
             ->add('submit', SubmitType::class);
     }

@@ -24,16 +24,14 @@ class RegistrationCommandHandler implements MessageHandlerInterface
         } else {
             $role = [Role::ROLE_EMPLOYEE];
         }
-        try{
+
         $user = new User(
             $createUserCommand->getEmail(),
             $createUserCommand->getFirstName(),
             $createUserCommand->getLastName(),
             $role
         );
-        } catch (\Exception $exception){
-            dd($exception);
-        }
+
         $user->setPassword($this->hasher->hashPassword($user, $createUserCommand->getPassword()));
 
         $this->em->persist($user);
