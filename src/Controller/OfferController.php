@@ -24,7 +24,7 @@ class OfferController extends AbstractController
     {
     }
 
-    #[Route('/offers', name: 'app_offers')]
+    #[Route('/offers', name: 'app_offers', methods: ['GET'])]
     public function offers(OfferRepository $offerRepository): Response
     {
         $offers = $offerRepository->findAll();
@@ -46,9 +46,8 @@ class OfferController extends AbstractController
     public function new(Request $request): Response
     {
         $company = $this->getUser()->getCompany();
-        $offers = $company->getOffers();
 
-        if (count($offers->toArray()) === 3) {
+        if(!$this->offerService->canAddOffer($company->getId())){
             $this->addFlash('danger', 'You cannot add more offers');
 
             return $this->redirectToRoute('app_profile_company_owner');
@@ -65,7 +64,7 @@ class OfferController extends AbstractController
                 return $this->redirectToRoute('app_profile_company_owner');
             }
 
-            $this->offerService->addNewOffer($createOfferRequest, $company);
+            $this->offerService->addNewOffer($createOfferRequest, $company->getId());
 
             $this->addFlash('success', 'Offer added successfully!');
 

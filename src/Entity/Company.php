@@ -36,6 +36,9 @@ class Company
     #[ORM\OneToMany(mappedBy: 'Sender', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\Column(type:'string', unique: true, nullable: true)]
+    private string $apiToken;
+
     public function __construct(string $name, ?string $city, User $owner)
     {
         $this->name = $name;

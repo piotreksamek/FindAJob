@@ -37,7 +37,6 @@ class OfferTest extends WebTestCase
         $companyOwner = $this->userBuilder->createCompanyOwner();
 
         $this->client->loginUser($companyOwner);
-
         $crawler = $this->client->request('GET', '/profile/company/new/offer');
         $form = $crawler->selectButton('create_offer_form[submit]')->form();
         $form['create_offer_form[name]'] = 'PHP DEVELOPER';
