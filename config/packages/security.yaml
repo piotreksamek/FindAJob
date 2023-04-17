@@ -18,9 +18,20 @@ security:
 
 
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+
         main:
             lazy: true
             provider: app_user_provider
@@ -38,6 +49,9 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 604800
 
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -50,6 +64,8 @@ security:
 #         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
 #         - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
          - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY, methods: [PUT, DELETE, POST] }
         # - { path: ^/profile, roles: ROLE_USER
 
 when@test:

@@ -43,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'Recipient', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\Column(type:'string', unique: true, nullable: true)]
+    private string $apiToken;
+
     public function __construct(string $email, string $firstName, string $lastName, array $roles)
     {
         $this->email = $email;
@@ -149,5 +152,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getMessages(): Collection
     {
         return $this->messages;
+    }
+
+    public function getApiToken(): string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(string $apiToken): void
+    {
+        $this->apiToken = $apiToken;
     }
 }
